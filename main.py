@@ -1,11 +1,9 @@
-import pygame as p
 from sys import exit
 from random import randint
+import pygame as p
 
 #Initializes pygame
 p.init()
-
-
 
 #Sets the display surface/window
 screen = p.display.set_mode((800,400))
@@ -20,6 +18,7 @@ clock = p.time.Clock()
 skySurface = p.image.load('RunnerGame/graphics/Sky.png').convert()
 groundSurface = p.image.load('RunnerGame/graphics/ground.png').convert()
 timeEnded = 0
+count = 0
 
 def obstacleMovement(obstacleRectList):
     if obstacleRectList:
@@ -84,7 +83,6 @@ while True:
             if event.type == p.KEYDOWN:
                 if event.key == p.K_UP or event.key == p.K_SPACE :
                     gameRunning = True
-                    count = 0
         if event.type == obstacleTimer and gameRunning:
             if randint(0,2) == 0:
                 obstacleRectList.append(snailSurface.get_rect(bottomright = (randint(900,1100),300)))
@@ -96,7 +94,7 @@ while True:
         #Puts one surface on the display surface
         screen.blit(skySurface,(0,0))
         screen.blit(groundSurface, (0,300))
-        count = p.time.get_ticks()-timeEnded
+        count = p.time.get_ticks() - timeEnded
         scoreSurface = font.render(f'Score: {round(count/1000)}', False, 'Green')
         scoreRectangle = scoreSurface.get_rect(midbottom = (400,80))
         screen.blit(scoreSurface, scoreRectangle)
@@ -119,12 +117,14 @@ while True:
         obstacleRectList = obstacleMovement(obstacleRectList)
             
         gameRunning = collisions(playerRect, obstacleRectList)
-        print(gameRunning)
+        
 
     else:
         snail_x_pos = 800
         screen.fill((94,129,162))
+        timeEnded = p.time.get_ticks()
         obstacleRectList.clear()
+        playerRect.midbottom = (80,300)
         
         screen.blit(playerEndGameScaled,playerEndGameRect)
         scoreSurface = font.render(f'Score: {round(count/1000)}', False, 'Green')
@@ -134,6 +134,8 @@ while True:
         instructionsSurface = font.render(f'Press Space to Play Again', False, 'Green')
         instructionsRectangle = instructionsSurface.get_rect(midbottom = (400,360))
         screen.blit(instructionsSurface, instructionsRectangle)
+        
+        
     
 
 
